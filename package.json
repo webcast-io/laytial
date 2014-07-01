@@ -1,0 +1,33 @@
+{
+  "name": "laytial",
+  "version": "0.0.0",
+  "description": "Express layout and partial handling",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:webcast-io/laytial.git"
+  },
+  "keywords": [
+    "layout",
+    "partial",
+    "express",
+    "connect",
+    "render"
+  ],
+  "author": "Ben Evans <ben@bensbit.co.uk> (http://bensbit.co.uk)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/webcast-io/laytial/issues"
+  },
+  "homepage": "https://github.com/webcast-io/laytial",
+  "devDependencies": {
+    "express": "^4.4.5"
+  },
+  "dependencies": {
+    "ejs": "^1.0.0",
+    "underscore": "^1.6.0"
+  }
+}
