@@ -8,33 +8,47 @@ module.exports = function() {
 
   return function(req, res, next) {
 
-    res.partial = res.render;
+    res.expressRender = res.render;
 
     var viewExt = req.app.get('view engine');
     var viewRootPath = req.app.get('views');
 
-    req.app.locals.layout = req.app.locals.layout || 'layout.' + viewExt;
-
     res.render = function(view, locals) {
-      console.log('Fake res.Rendering')
+
       locals = _.defaults(locals, res.locals, req.app.locals);
+
+      //
+      // Render Body
+      //
 
       var viewPath = resolve(viewRootPath, view, viewExt);
 
-      locals.partial = function(view) {
-        return renderFileSync(partialPath);
+      if(!viewPath) {
+        return next(new Error('Unable to resolve view ' + view));
       }
 
- 
-      console.log('Rendering Body: ', viewPath);
-      // Render Body
-      renderFile(viewPath, { locals: locals }, function(err, bodyHtml) {
+      var bodyHtml = renderFileSync(viewPath, locals);
 
-      });
+      if(locals.layout === false) {
+        return res.send(bodyHtml);
+      }
 
-      
+      //
+      // Render Layout
+      //
+
+      var layoutPath = resolve(viewRootPath, locals.layout || 'layout', viewExt);
+
+      if(!layoutPath) {
+        return next(new Error('Unable to resolve layout ' + (locals.layout || 'layout')));
+      }
+
+      var layoutHtml = renderFileSync(layoutPath, _.extend(locals, { body: bodyHtml }));
+
+      res.send(layoutHtml); 
+
+     
     };
-
 
     return next();
 
@@ -42,57 +56,23 @@ module.exports = function() {
 
 }
 
-function renderFile(path, cb) {
-  fs.readFile(path, 'utf8', function(err, source) {
-    if(err) return cb(err);
-    var html;
-    try {
-      html = ejs.render(source);
-    } catch (e) {
-      cb(e);
-    }
-    cb(null, html);
-  });
+var renderFileSync = function(path, locals) {
+  return ejs.render(fs.readFileSync(path, 'utf8'), { locals: locals });
 }
 
-function renderFileSync(path, options) {
-  ejs.render(fs.readFileSync(path, 'utf8'), options)
-}
+var resolve = function(root, view, ext) {
 
-function resolve(root, view, ext) {
-  console.log('resolve:', root, view, ext);
   var paths = [
-    [root, view + '.' + ext],
-    [root, view, './index.' + ext],
-    [root, view],
-    [root + '/', view + '.' + ext],
-    [root + '/', view, './index.' + ext],
-    [root + '/', view]
-  ];
+    path.resolve(root, view + '.' + ext),
+    path.resolve(root, view),
+    path.resolve(root, view, './index.' + ext)
+  ]
 
-  paths = _.map(paths, function(pathStruct) {
-    pathStruct[0] = fs;
-    return path.resolve.apply(null, pathStruct);
-  });
-  
-  var pathFound = _.find(paths, function(pathStruct) {
-    console.log('Trying ' + pathStruct);  
-    return fs.existsSync(pathStruct);
-  });
-  console.log('path found:', pathFound);
+  for (var i = 0; i < paths.length; i++) {
+    if(fs.existsSync(paths[i]))
+      return paths[i];
+  }
 
-
-  return pathFound || false;
+  return false;
 
 }
-
-function renderer(ext){
-  if(ext[0] !== '.'){
-    ext = '.' + ext;
-  }
-  return register[ext] != null
-    ? register[ext]
-    : register[ext] = require(ext.slice(1)).render;
-};
-
-module.exports.renderer = renderer;
