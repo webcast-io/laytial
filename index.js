@@ -15,7 +15,7 @@ module.exports = function() {
 
     res.render = function(view, locals) {
 
-      locals = _.defaults(locals, res.locals, req.app.locals);
+      locals = _.defaults(locals || {}, res.locals, req.app.locals);
 
       //
       // Render Body
@@ -24,7 +24,7 @@ module.exports = function() {
       var viewPath = resolve(viewRootPath, view, viewExt);
 
       if(!viewPath) {
-        return next(new Error('Unable to resolve view ' + view));
+        return next(new Error('Unable to resolve view "' + view + '"'));
       }
 
       var bodyHtml = renderFileSync(viewPath, locals);
@@ -40,7 +40,7 @@ module.exports = function() {
       var layoutPath = resolve(viewRootPath, locals.layout || 'layout', viewExt);
 
       if(!layoutPath) {
-        return next(new Error('Unable to resolve layout ' + (locals.layout || 'layout')));
+        return next(new Error('Unable to resolve layout "' + (locals.layout || 'layout')) + '"');
       }
 
       var layoutHtml = renderFileSync(layoutPath, _.extend(locals, { body: bodyHtml }));

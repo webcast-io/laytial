@@ -11,15 +11,23 @@ app.set('view engine', 'ejs');
 app.use(laytial());
 
 app.get('/no-layout', function(req, res) {
-	res.render('hello.ejs', { name: 'Ben', layout: false });
+	res.render('hello.ejs', { name: 'Ben', layout: false })
 })
 
 app.get('/with-layout', function(req, res) {
-	res.render('hello.ejs', { name: 'Ben' });
+	res.render('hello.ejs', { name: 'Ben' })
 })
 
 app.get('/specific-layout', function(req, res) {
-	res.render('hello.ejs', { name: 'Ben', layout: 'specific-layout' });
+	res.render('hello.ejs', { name: 'Ben', layout: 'specific-layout' })
+})
+
+app.get('/missing-view', function(req, res) {
+	res.render('missing-view')
+})
+
+app.get('/missing-layout', function(req, res) {
+	res.render('hello', { layout: 'missing', name: 'Ben' })
 })
 
 app.listen(3000);
