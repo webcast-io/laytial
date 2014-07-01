@@ -18,4 +18,10 @@ app.get('/with-layout', function(req, res) {
 	res.render('hello.ejs', { name: 'Ben' });
 })
 
+app.get('/specific-layout', function(req, res) {
+	res.render('hello.ejs', { name: 'Ben', layout: 'specific-layout' });
+})
+
 app.listen(3000);
+
+module.exports = app;

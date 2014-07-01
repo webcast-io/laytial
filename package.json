@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/webcast-io/laytial",
   "devDependencies": {
-    "express": "^4.4.5"
+    "express": "^4.4.5",
+    "supertest": "^0.13.0"
   },
   "dependencies": {
     "ejs": "^1.0.0",
