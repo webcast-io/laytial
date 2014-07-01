@@ -34,5 +34,11 @@ describe('Laytial', function() {
 		.expect(500, done);
 	})
 
+	it('should load partials from body', function(done) {
+		request(app)
+		.get('/partial')
+		.expect('Layout. Partial.', done);
+	})
+
 });
 

@@ -17,6 +17,20 @@ module.exports = function() {
 
       locals = _.defaults(locals || {}, res.locals, req.app.locals);
 
+      var partialBasePath;
+
+      locals.partial = function(view, partialLocals) {
+
+        var partialPath = resolve(path.dirname(partialBasePath), view, viewExt);
+
+        if(!partialPath) {
+          throw new Error('Unable to resolve view "' + view + '"');
+        }
+
+        return renderFileSync(partialPath, _.defaults(partialLocals || {}, locals));
+
+      };
+
       //
       // Render Body
       //
@@ -26,6 +40,8 @@ module.exports = function() {
       if(!viewPath) {
         return next(new Error('Unable to resolve view "' + view + '"'));
       }
+
+      partialBasePath = viewPath;
 
       var bodyHtml = renderFileSync(viewPath, locals);
 
@@ -42,6 +58,8 @@ module.exports = function() {
       if(!layoutPath) {
         return next(new Error('Unable to resolve layout "' + (locals.layout || 'layout')) + '"');
       }
+
+      partialBasePath = layoutPath;
 
       var layoutHtml = renderFileSync(layoutPath, _.extend(locals, { body: bodyHtml }));
 

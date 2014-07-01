@@ -30,6 +30,10 @@ app.get('/missing-layout', function(req, res) {
 	res.render('hello', { layout: 'missing', name: 'Ben' })
 })
 
+app.get('/partial', function(req, res) {
+	res.render('include-partial')
+})
+
 app.listen(3000);
 
 module.exports = app;
