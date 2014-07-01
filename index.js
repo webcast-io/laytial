@@ -63,9 +63,9 @@ module.exports = function() {
 
       var layoutHtml = renderFileSync(layoutPath, _.extend(locals, { body: bodyHtml }));
 
-      res.send(layoutHtml); 
+      res.send(layoutHtml);
 
-     
+
     };
 
     return next();
