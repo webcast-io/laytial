@@ -8,6 +8,7 @@ var _    = require('underscore');
 var path = require('path');
 var fs   = require('fs');
 var ejs  = require('ejs');
+var resolve = require('resolve');
 
 /**
  * Helpers
@@ -17,15 +18,22 @@ var renderFileSync = function(path, locals) {
   return ejs.render(fs.readFileSync(path, 'utf8'), { locals: locals });
 };
 
-var resolve = function(root, view, ext) {
+var lookup = function(root, view, ext) {
 
   var paths = [
-    path.resolve(root, view + '.' + ext),
-    path.resolve(root, view),
-    path.resolve(root, view, './index.' + ext)
+    [view + '.' + ext],
+    [view],
+    [view, './index.' + ext]
   ];
 
   for (var i = 0; i < paths.length; i++) {
+
+    try {
+      paths[i] = resolve.sync.apply(paths[i], { basedir: root, moduleDirectory: false , extensions: ['.' + ext]});
+    } catch(e) {
+
+    }
+
     if(fs.existsSync(paths[i]))
       return paths[i];
   }
@@ -55,7 +63,7 @@ module.exports = function() {
 
       locals.partial = function(view, partialLocals) {
 
-        var partialPath = resolve(path.dirname(partialBasePath), view, viewExt);
+        var partialPath = lookup(path.dirname(partialBasePath), view, viewExt);
 
         if(!partialPath) {
           throw new Error('Unable to resolve view "' + view + '"');
@@ -69,7 +77,7 @@ module.exports = function() {
       // Render Body
       //
 
-      var viewPath = resolve(viewRootPath, view, viewExt);
+      var viewPath = lookup(viewRootPath, view, viewExt);
 
       if(!viewPath) {
         return next(new Error('Unable to resolve view "' + view + '"'));
@@ -87,7 +95,7 @@ module.exports = function() {
       // Render Layout
       //
 
-      var layoutPath = resolve(viewRootPath, locals.layout || 'layout', viewExt);
+      var layoutPath = lookup(viewRootPath, locals.layout || 'layout', viewExt);
 
       if(!layoutPath) {
         return next(new Error('Unable to resolve layout "' + (locals.layout || 'layout')) + '"');
