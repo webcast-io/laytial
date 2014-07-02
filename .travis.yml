@@ -1,4 +1,16 @@
+
 language: node_js
+
 node_js:
 - '0.11'
 - '0.10'
+
+matrix:
+  fast_finish: true
+
+env:
+  matrix:
+    - TEST_CMD=test
+    - TEST_CMD=lint
+
+script: npm run $TEST_CMD
