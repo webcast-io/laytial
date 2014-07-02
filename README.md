@@ -57,6 +57,8 @@ views/home.ejs:
 <h2>Welcome Home <%= name %></h2>
 ```
 
+## Licence
+
 The MIT License (MIT)
 
 Copyright (c) 2014 Streamcast.IO
