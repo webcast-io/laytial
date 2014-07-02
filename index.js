@@ -18,29 +18,6 @@ var renderFileSync = function(path, locals) {
   return ejs.render(fs.readFileSync(path, 'utf8'), { locals: locals });
 };
 
-var lookup = function(root, view, ext) {
-
-  var paths = [
-    [view + '.' + ext],
-    [view],
-    [view, './index.' + ext]
-  ];
-
-  for (var i = 0; i < paths.length; i++) {
-
-    try {
-      paths[i] = resolve.sync.apply(paths[i], { basedir: root, moduleDirectory: false , extensions: ['.' + ext]});
-    } catch(e) {
-
-    }
-
-    if(fs.existsSync(paths[i]))
-      return paths[i];
-  }
-
-  return false;
-
-};
 
 /**
  * Laytial Middleware
@@ -49,6 +26,15 @@ var lookup = function(root, view, ext) {
 module.exports = function() {
 
   return function(req, res, next) {
+
+    var lookup = function (root, view, ext) {
+      var view = new (req.app.get('view'))(view, {
+        defaultEngine: req.app.get('view engine'),
+        root: req.app.get('views'),
+        engines: req.app.engines
+      });
+      return view.path;
+    }
 
     res.expressRender = res.render;
 
