@@ -1,8 +1,42 @@
+'use strict';
+
+/**
+ * Module Deps
+ */
 
 var _    = require('underscore');
 var path = require('path');
 var fs   = require('fs');
 var ejs  = require('ejs');
+
+/**
+ * Helpers
+ */
+
+var renderFileSync = function(path, locals) {
+  return ejs.render(fs.readFileSync(path, 'utf8'), { locals: locals });
+};
+
+var resolve = function(root, view, ext) {
+
+  var paths = [
+    path.resolve(root, view + '.' + ext),
+    path.resolve(root, view),
+    path.resolve(root, view, './index.' + ext)
+  ];
+
+  for (var i = 0; i < paths.length; i++) {
+    if(fs.existsSync(paths[i]))
+      return paths[i];
+  }
+
+  return false;
+
+};
+
+/**
+ * Laytial Middleware
+ */
 
 module.exports = function() {
 
@@ -70,27 +104,6 @@ module.exports = function() {
 
     return next();
 
-  }
+  };
 
-}
-
-var renderFileSync = function(path, locals) {
-  return ejs.render(fs.readFileSync(path, 'utf8'), { locals: locals });
-}
-
-var resolve = function(root, view, ext) {
-
-  var paths = [
-    path.resolve(root, view + '.' + ext),
-    path.resolve(root, view),
-    path.resolve(root, view, './index.' + ext)
-  ]
-
-  for (var i = 0; i < paths.length; i++) {
-    if(fs.existsSync(paths[i]))
-      return paths[i];
-  }
-
-  return false;
-
-}
+};
