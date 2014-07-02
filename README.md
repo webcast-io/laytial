@@ -15,7 +15,7 @@ Laytial overwrites Express's `res.render` method. To do this Laytial is provided
 
     app.use(latial());
 
-The default layout is 'layout' but can be overwritten by setting a `layout` local with on `app.locals`, `res.locals` or the locals passed to the second paramater in `res.render(view, locals)`. Setting `layout: false` will disable the layout render and just send the body, `layout: 'some/path'` will render with the specified layout.
+The default layout is 'layout' but can be overwritten by setting a `layout` local on `app.locals`, `res.locals` or the locals passed to the second paramater of `res.render(view, locals)`. Setting `layout: false` will disable the layout render and just send the body, `layout: 'some/path'` will render with the specified layout.
 
 ## Example
 
