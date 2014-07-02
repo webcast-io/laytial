@@ -8,7 +8,6 @@ var _    = require('underscore');
 var path = require('path');
 var fs   = require('fs');
 var ejs  = require('ejs');
-var resolve = require('resolve');
 
 /**
  * Helpers
@@ -27,14 +26,14 @@ module.exports = function() {
 
   return function(req, res, next) {
 
-    var lookup = function (root, view, ext) {
-      var view = new (req.app.get('view'))(view, {
+    var lookup = function (root, view) {
+      view = new (req.app.get('view'))(view, {
         defaultEngine: req.app.get('view engine'),
         root: req.app.get('views'),
         engines: req.app.engines
       });
       return view.path;
-    }
+    };
 
     res.expressRender = res.render;
 

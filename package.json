@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "ejs": "^1.0.0",
-    "resolve": "^0.7.1",
     "underscore": "^1.6.0"
   }
 }
