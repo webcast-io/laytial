@@ -14,7 +14,7 @@ var ejs  = require('ejs');
  */
 
 var renderFileSync = function(path, locals) {
-  return ejs.render(fs.readFileSync(path, 'utf8'), { locals: locals });
+  return ejs.render(fs.readFileSync(path, 'utf8'), { locals: locals, filename: path });
 };
 
 
@@ -26,8 +26,14 @@ module.exports = function() {
 
   return function(req, res, next) {
 
-    var lookup = function (root, view) {
-      view = new (req.app.get('view'))(view, {
+    var lookup = function (root, viewName) {
+      var view = new (req.app.get('view'))(viewName, {
+        defaultEngine: req.app.get('view engine'),
+        root: root,
+        engines: req.app.engines
+      });
+      if(view.path) return view.path;
+      view = new (req.app.get('view'))(viewName, {
         defaultEngine: req.app.get('view engine'),
         root: req.app.get('views'),
         engines: req.app.engines
