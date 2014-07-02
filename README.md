@@ -1,5 +1,5 @@
 
-# Laytial
+# Laytial [![Build Status](https://travis-ci.org/webcast-io/laytial.svg?branch=master)](https://travis-ci.org/webcast-io/laytial)
 
 Layer and partial rendering for Express 4.x
 
