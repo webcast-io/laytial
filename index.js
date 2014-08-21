@@ -20,15 +20,14 @@ var viewCache = {};
  */
 
 var getFileSync = function(path, useCache) {
-  console.log('useCache: ' + useCache);
+
   if(!useCache || typeof viewCache[path] !== 'string') {
-    console.log('Reloading From File')
     viewCache[path] = fs.readFileSync(path, 'utf8');
   }
 
   return viewCache[path];
 
-}
+};
 
 var renderFileSync = function(path, locals, useCache) {
   return ejs.render(getFileSync(path, useCache), { locals: locals, filename: path });
