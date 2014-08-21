@@ -1,6 +1,6 @@
 {
   "name": "laytial",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Express layout and partial handling",
   "main": "index.js",
   "scripts": {
