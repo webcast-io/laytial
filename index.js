@@ -10,27 +10,15 @@ var fs   = require('fs');
 var ejs  = require('ejs');
 
 /**
- * Stores
- */
-
-var viewCache = {};
-
-/**
  * Helpers
  */
 
-var getFileSync = function(path, useCache) {
-
-  if(!useCache || typeof viewCache[path] !== 'string') {
-    viewCache[path] = fs.readFileSync(path, 'utf8');
-  }
-
-  return viewCache[path];
-
+var getFileSync = function(path) {
+  return fs.readFileSync(path, 'utf8');
 };
 
-var renderFileSync = function(path, locals, useCache) {
-  return ejs.render(getFileSync(path, useCache), { locals: locals, filename: path });
+var renderFileSync = function(path, locals, options) {
+  return ejs.render(getFileSync(path, options), _.defaults({ locals: locals, filename: path }, options));
 };
 
 
@@ -42,7 +30,7 @@ module.exports = function() {
 
   return function(req, res, next) {
 
-    var useCache = req.app.get('cache views') ||
+    var useCache = req.app.get('view cache') ||
     (['production', 'staging'].indexOf(process.env.NODE_ENV || 'development') !== -1) ?
     true : false;
 
@@ -80,7 +68,7 @@ module.exports = function() {
           throw new Error('Unable to resolve view "' + view + '"');
         }
 
-        return renderFileSync(partialPath, _.defaults(partialLocals || {}, locals), useCache);
+        return renderFileSync(partialPath, _.defaults(partialLocals || {}, locals), { cache: useCache });
 
       };
 
@@ -96,7 +84,7 @@ module.exports = function() {
 
       partialBasePath = viewPath;
 
-      var bodyHtml = renderFileSync(viewPath, locals, useCache);
+      var bodyHtml = renderFileSync(viewPath, locals, { cache: useCache });
 
       if(locals.layout === false) {
         return res.send(bodyHtml);
@@ -114,7 +102,7 @@ module.exports = function() {
 
       partialBasePath = layoutPath;
 
-      var layoutHtml = renderFileSync(layoutPath, _.extend(locals, { body: bodyHtml }), useCache);
+      var layoutHtml = renderFileSync(layoutPath, _.extend(locals, { body: bodyHtml }), { cache: useCache });
 
       res.send(layoutHtml);
 
