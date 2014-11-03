@@ -67,8 +67,11 @@ module.exports = function() {
         if(!partialPath) {
           throw new Error('Unable to resolve view "' + view + '"');
         }
-
-        return renderFileSync(partialPath, _.defaults(partialLocals || {}, locals), { cache: useCache });
+        try {
+          return renderFileSync(partialPath, _.defaults(partialLocals || {}, locals), { cache: useCache });
+        } catch (e) {
+          return next(e);
+        }
 
       };
 
@@ -83,8 +86,11 @@ module.exports = function() {
       }
 
       partialBasePath = viewPath;
-
-      var bodyHtml = renderFileSync(viewPath, locals, { cache: useCache });
+      try {
+        var bodyHtml = renderFileSync(viewPath, locals, { cache: useCache });
+      } catch (e) {
+        return next(e);
+      }
 
       if(locals.layout === false) {
         return res.send(bodyHtml);
@@ -101,8 +107,11 @@ module.exports = function() {
       }
 
       partialBasePath = layoutPath;
-
-      var layoutHtml = renderFileSync(layoutPath, _.extend(locals, { body: bodyHtml }), { cache: useCache });
+      try {
+        var layoutHtml = renderFileSync(layoutPath, _.extend(locals, { body: bodyHtml }), { cache: useCache });
+      } catch (e) {
+        return next(e);
+      }
 
       res.send(layoutHtml);
 

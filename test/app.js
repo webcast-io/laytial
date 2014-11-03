@@ -35,6 +35,10 @@ app.get('/partial', function(req, res) {
   res.render('include-partial');
 });
 
+app.get('/should-error', function(req, res) {
+  res.render('viewerror');
+});
+
 app.listen(3000);
 
 module.exports = app;
