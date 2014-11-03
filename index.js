@@ -86,8 +86,11 @@ module.exports = function() {
       }
 
       partialBasePath = viewPath;
+
+      var bodyHtml;
+
       try {
-        var bodyHtml = renderFileSync(viewPath, locals, { cache: useCache });
+        bodyHtml = renderFileSync(viewPath, locals, { cache: useCache });
       } catch (e) {
         return next(e);
       }
@@ -107,8 +110,11 @@ module.exports = function() {
       }
 
       partialBasePath = layoutPath;
+
+      var layoutHtml;
+
       try {
-        var layoutHtml = renderFileSync(layoutPath, _.extend(locals, { body: bodyHtml }), { cache: useCache });
+        layoutHtml = renderFileSync(layoutPath, _.extend(locals, { body: bodyHtml }), { cache: useCache });
       } catch (e) {
         return next(e);
       }
