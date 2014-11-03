@@ -28,6 +28,12 @@ describe('Laytial', function() {
     .expect(500, done);
   })
 
+  it('should error if view engine errors', function(done) {
+    request(app)
+    .get('/should-error')
+    .expect(500, done);
+  })
+
   it('should error if layout is missing', function(done) {
     request(app)
     .get('/missing-layout')
